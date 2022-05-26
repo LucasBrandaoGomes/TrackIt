@@ -4,31 +4,50 @@ import {useState} from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
 import {useNavigate} from 'react-router-dom';
+import { useContext } from "react";
+import TokenContext from "../contexts/TokenContext"
+import InfoLoginContext from "../contexts/InfoLogin"
 
 export default function LoginPage(){
-    
+
     const navigate = useNavigate();
     const [email, setEmail] = useState("")
     const [senha, setSenha] = useState("")
-    const [token, setToken] = useState("");
+    const [opaco,setOpaco] = useState("false")
+    
+    const { setToken } = useContext(TokenContext);
+    {/*const {infoLogin, setInfoLogin } = useContext(InfoLoginContext);*/}
 
     function SubmitLogin(event){
         event.preventDefault();
-        const infoLogin =
+        
+        setOpaco("true");
+
+        const envioLogin =
             {
                 email,
                 password: senha
             }
         
-        const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", infoLogin)
+        const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", envioLogin)
         
         promise
         .then(res =>{ 
-            console.log(res.data);
             setToken(res.data.token);
+            {/*setInfoLogin({
+                id: res.data.id,
+                name: res.data.name,
+                image: res.data.image,
+                email: res.data.email,
+                password: res.data.password,
+                token: res.data.token
+            })*/}
             navigate("/hoje");
+
         })
-        .catch(err=> alert("Erro"))
+        .catch(err=> {
+            alert("Erro");
+            setOpaco("false")})
     }
 
 
@@ -38,9 +57,9 @@ export default function LoginPage(){
                 <img src={logoEntrada} alt="Logo entrada"/>
             </Logo>
             <Form onSubmit={SubmitLogin}>
-                <input type="email" placeholder="email"  value={email} onChange={e => setEmail(e.target.value)} required/>
-                <input type="number" placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)} required/>
-                <Entrar type="submit">Entrar</Entrar>
+                <input type="email" placeholder="email"  value={email} opaco={opaco} onChange={e => setEmail(e.target.value)} required/>
+                <input type="number" placeholder="senha" value={senha} opaco={opaco} onChange={e => setSenha(e.target.value)} required/>
+                <Entrar type="submit" opaco={opaco}>Entrar</Entrar>
             </Form >
             <Cadastrese>
                 <Link to="/cadastro">
@@ -59,9 +78,12 @@ const Form = styled.form`
     flex-direction: column;
     width: 303px;
     height: 45px;
-    background: #FFFFFF;
+    background:#FFFFFF;
+    
 
     input{
+        background: ${props => props.opaco ? "#f2f2f2" : "#ffffff"};
+        opacity: 1;
         font-family: 'Lexend Deca';
         font-style: normal;
         font-weight: 400;
@@ -71,7 +93,8 @@ const Form = styled.form`
         border: 1px solid #D5D5D5;
         border-radius: 5px;
     
-        color: #DBDBDB;}
+        color: #DBDBDB;
+    }
 `
 const Entrar = styled.button`
     width: 303px;
@@ -88,6 +111,7 @@ const Entrar = styled.button`
     line-height: 26px;
 
     color: #FFFFFF;
+    opacity: ${props => props.opaco ? 1 : 0.4 };
     &:hover{
         cursor:pointer;
     }

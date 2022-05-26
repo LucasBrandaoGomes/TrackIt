@@ -23,12 +23,12 @@ export default function Cadastro(){
                 password: senhaCadastro
             }
         
+        console.log("------")     
+
         const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", infoCadastro)
         
         promise
         .then(res =>{ 
-            console.log(res.data);
-            
             navigate("/");
         })
         .catch(err=> alert("Erro, preencha corretamente os dados"))
