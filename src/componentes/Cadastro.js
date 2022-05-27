@@ -49,7 +49,7 @@ export default function Cadastro(){
             </Logo>
             <Form onSubmit={SubmitCadastro} >
                 <input type="email" disabled={disableButton} placeholder="email"  value={emailCadastro} onChange={e => setEmailCadastro(e.target.value)} required/>
-                <input type="number" disabled={disableButton} placeholder="senha" value={senhaCadastro} onChange={e => setSenhaCadastro(e.target.value)} required/>
+                <input type="password" disabled={disableButton} placeholder="senha" value={senhaCadastro} onChange={e => setSenhaCadastro(e.target.value)} required/>
                 <input type="text" disabled={disableButton} placeholder="nome" value={nomeCadastro} onChange={e => setNomeCadastro(e.target.value)} required/>
                 <input type="url" disabled={disableButton} placeholder="foto" value={fotoCadastro} onChange={e => setFotoCadastro(e.target.value)} required/>
                 <Cadastrar type="submit" disabled={disableButton}>{disableButton ? <ThreeDots color="white"/> : "Cadastrar"}</Cadastrar>

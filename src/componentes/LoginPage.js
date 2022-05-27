@@ -48,7 +48,7 @@ export default function LoginPage(){
             </Logo>
             <Form onSubmit={SubmitLogin}>
                 <input type="email" disabled={disableButton} placeholder="email"  value={email} onChange={e => setEmail(e.target.value)} required/>
-                <input type="number" disabled={disableButton} placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)} required/>
+                <input type="password" disabled={disableButton} placeholder="senha" value={senha} onChange={e => setSenha(e.target.value)} required/>
                 <Entrar type="submit" disabled={disableButton}>{disableButton ? <ThreeDots color="white"/> : "Entrar"}</Entrar>
             </Form >
             <Cadastrese>

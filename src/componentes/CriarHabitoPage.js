@@ -1,10 +1,14 @@
 import styled from "styled-components"
 import {useState} from "react"
+import axios from "axios"
+import InfoLoginContext from "../contexts/InfoLogin";
+import { useContext } from "react";
+
 
 function Dia({dia, disableButton, diasSelecionados, toggle, id}) {
     
     const selecionado = diasSelecionados.some(item => item === id);
-
+    console.log("selecionado", selecionado)
     return (
        <button disabled={disableButton} onClick={() => toggle(id)}  selecionado={selecionado}>
            {dia}
@@ -13,11 +17,14 @@ function Dia({dia, disableButton, diasSelecionados, toggle, id}) {
 }
 
 export default function CriarHabitoPage(){
+
     const [novoHabito, setNovoHabito] = useState("")
-    //const [diasDoHabito, setDiasDoHabito] = useState([])
     const [diasSelecionados, setDiasSelecionados] = useState([])
     const [disableButton,setDisableButton] = useState(false)
     
+    const { infoLogin } = useContext(InfoLoginContext);
+    const [meusHabitos, setMeusHabitos] = useState([]);
+
     const diasDaSemana = [{id: 1, dia: "D"}, {id: 2, dia: "S"}, {id: 3, dia: "T"}, 
         {id: 4, dia: "Q"}, {id: 5, dia: "Q"}, {id: 6, dia: "S"}, {id: 7, dia: "S"}];
 
@@ -26,7 +33,7 @@ export default function CriarHabitoPage(){
         const jaSelecionado = diasSelecionados.some(dia => dia.id === id);
     
         if (!jaSelecionado) {
-        setDiasSelecionados([...diasSelecionados,id]);
+        setDiasSelecionados(diasSelecionados => [...diasSelecionados,id]);
         } else {
         const novosDias = diasSelecionados.filter(dia => dia.id !== id);
         setDiasSelecionados(novosDias);
@@ -35,7 +42,39 @@ export default function CriarHabitoPage(){
 
     function criarNovoHabito(e) {
         e.preventDefault();
+        setDisableButton(true)
+        
+        if(diasSelecionados.length === 0) {
+            alert("Selecione um dia para o este hábito!");
+            return;
+        }
+        const envioHabito = 
+        {
+            name: novoHabito,
+            days: diasSelecionados
+        }
+        const config = {
+            headers: {
+                Authorization: `Bearer ${infoLogin.token}`
+            }
+        }
+        function limparFormNovoHabito(){
+            setNovoHabito("");
+            setDiasSelecionados([]);
+        }
+    
+        const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", envioHabito, config);
+        promise.then(res => {
+            setMeusHabitos([...meusHabitos, res.data]);
+            limparFormNovoHabito();
+            setDisableButton(false);
+        });
+        promise.catch(res => {
+            alert("Erro ao salvar o hábito!");
+            setDisableButton(false);
+        });
     }
+
     return(
         <ContainerNovoHabito>
             <FormNovoHabito onSubmit={criarNovoHabito}>
@@ -96,9 +135,9 @@ const Dias = styled.div`
         font-weight: 400;
         font-size: 19.976px;
         line-height: 25px;
-        color: ${props => props.selected ? "#FFFFFF" : "#DBDBDB"};
-        background-color: ${props => props.selected ? "#CFCFCF" : "#FFFFFF"};
-        border: 1px solid ${props => props.selected ? "#CFCFCF" : "#D4D4D4"};
+        color: ${props => props.selecionado ? "#FFFFFF" : "#DBDBDB"};
+        background-color: ${props => props.selecionado ? "#CFCFCF" : "#FFFFFF"};
+        border: 1px solid ${props => props.selecionado ? "#CFCFCF" : "#D4D4D4"};
         &:hover{
             cursor: pointer;
         }
@@ -134,6 +173,6 @@ const CancelarSalvar = styled.div`
     color: #FFFFFF;
     &:hover{
         cursor:pointer;
-    }
-}`
+    }}`
+
 

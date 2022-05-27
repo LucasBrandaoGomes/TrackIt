@@ -49,7 +49,10 @@ export default function Habitos(){
                         <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
                     </SemHabitos>
             :
+            <>
+                <CriarHabitoPage />
                 <p>AQUI SEUS HÁBITOS</p>
+            </>
             }
             </Container>
             <Menu />
