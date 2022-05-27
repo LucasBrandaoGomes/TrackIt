@@ -1,19 +1,19 @@
 import styled from "styled-components"
-import Rectangle14 from "../assets/img/Rectangle14.png"
-import {useState} from "react"
-import { Link } from "react-router-dom"
-import axios from "axios"
-import {useNavigate} from 'react-router-dom';
 import Topo from "./Topo"
 import Menu from "./Menu"
 import dayjs from "dayjs"
 import 'dayjs/locale/pt-br'
+import { useContext } from "react";
+import InfoLoginContext from "../contexts/InfoLogin";
 
 export default function TelaHoje(){
+
     const dataHoje = dayjs().locale('pt-br')
+    const { infoLogin } = useContext(InfoLoginContext);
+
     return (
         <>  
-            <Topo urlPerfil={Rectangle14} />
+            <Topo urlImage={infoLogin.image} />
             <ConteudoHoje>
                 <div>
                     <h1>{dataHoje.format("dddd")}, {dataHoje.format("DD/MM")}</h1>

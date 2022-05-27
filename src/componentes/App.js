@@ -5,17 +5,14 @@ import Cadastro from './Cadastro'
 import LoginPage from "./LoginPage";
 import TelaHoje from "./TelaHoje";
 import Habitos from "./Habitos";
-import TokenContext from "../contexts/TokenContext";
 import InfoLoginContext from "../contexts/InfoLogin";
 
 export default function App(){
     
-    const [token, setToken] = useState("");
-    {/*const [infoLogin, setInfoLogin] = useState({})*/}
+    const [infoLogin, setInfoLogin] = useState({});
     
     return(
-        <TokenContext.Provider value={{ token, setToken}}>
-            {/*<InfoLoginContext.Provider value={infoLogin}>*/} 
+        <InfoLoginContext.Provider value = {{infoLogin , setInfoLogin}}>
             <BrowserRouter>
                     <div className="root">
                         <Container>
@@ -28,8 +25,7 @@ export default function App(){
                         </Container>
                     </div>
             </BrowserRouter>
-            {/*</InfoLoginContext.Provider>*/}
-        </TokenContext.Provider>
+        </InfoLoginContext.Provider>
     )
 }
 

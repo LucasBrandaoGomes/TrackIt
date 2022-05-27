@@ -1,10 +1,6 @@
 import styled from "styled-components"
-import Rectangle14 from "../assets/img/Rectangle14.png"
-import {useState} from "react"
 import { Link } from "react-router-dom"
-import axios from "axios"
 import {useNavigate} from 'react-router-dom';
-import Topo from "./Topo"
 import { CircularProgressbar,  buildStyles } from 'react-circular-progressbar';
 
 export default function Menu(){
@@ -12,6 +8,9 @@ export default function Menu(){
     
     function irParaHabitos(){
         navigate("/habitos")
+    }
+    function irParaHistorico(){
+        navigate("/historico")
     }
     const percentage = 66;
     return (
@@ -36,16 +35,14 @@ export default function Menu(){
                         />
                 </div>
             </Link>
-            <Link to="/historico">
-                <p>Histórico</p>
-            </Link>
+            <p onClick={irParaHistorico}>Histórico</p>
         </Footer>
     )
 }
 
 const Footer = styled.div`
     position:fixed;
-    top:0;
+    bottom:0;
     left:0;
     display:flex;
     justify-content:space-around;

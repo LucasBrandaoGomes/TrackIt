@@ -1,12 +1,12 @@
 import styled from "styled-components"
 
+export default function Topo({urlImage}){
 
-export default function Topo({urlPerfil}){
     return (
         
             <Top>
                 <p>TrackIt</p>
-                <img src={urlPerfil} alt="Foto do perfil"/>
+                <img src={urlImage} alt="Foto do perfil"/>
             </Top>
     )
 }
@@ -38,5 +38,6 @@ const Top = styled.div`
         width: 51px;
         height: 51px;
         border-radius: 98.5px;
+        object-fit:cover;
     }
 `
