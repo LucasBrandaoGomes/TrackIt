@@ -14,6 +14,7 @@ export default function Habitos(){
     const { infoLogin } = useContext(InfoLoginContext);
     const [addHabito, setAddHabito] = useState(false)
 
+
     const config = 
     {
         headers:{Authorization: `Bearer ${infoLogin.token}`}
@@ -25,6 +26,7 @@ export default function Habitos(){
     
     promise.then(res=> {
         setMeusHabitos([...res.data]);
+        console.log("meus habitos", meusHabitos)
         });
     }, []);
 
@@ -39,7 +41,7 @@ export default function Habitos(){
             {meusHabitos.length === 0 ?
                  addHabito ?
                 <>
-                    <CriarHabitoPage />
+                    <CriarHabitoPage setAddHabito={setAddHabito}/>
                     <SemHabitos>
                         <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
                     </SemHabitos>
@@ -50,8 +52,23 @@ export default function Habitos(){
                     </SemHabitos>
             :
             <>
-                <CriarHabitoPage />
-                <p>AQUI SEUS HÁBITOS</p>
+                {addHabito ?
+                    <>
+                        <CriarHabitoPage setAddHabito={setAddHabito}/>
+                        <p>{meusHabitos.map(nome => <p>{nome.name}</p>)}</p>
+                    </>
+                :   
+                    
+                    <>
+                        {meusHabitos.map(item => 
+                        <div>
+                            <p>{item.name}</p>
+                            <DiasDoHabito item={item}/>
+                        </div>)}
+                    </>
+                    
+                    }
+
             </>
             }
             </Container>
@@ -59,7 +76,9 @@ export default function Habitos(){
         </>
     )
 }
-
+function DiasDoHabito ({item}){
+    return item.days.map(diaSemana => <div>{diaSemana}</div>)
+}
 const Container = styled.div`
     background-color: #F2F2F2;
     width:100%;

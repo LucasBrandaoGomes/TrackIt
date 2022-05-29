@@ -37,7 +37,7 @@ export default function LoginPage(){
 
         })
         .catch(err=> {
-            alert("Erro");
+            alert("Erro Login");
             setDisableButton(false)})
     }
 

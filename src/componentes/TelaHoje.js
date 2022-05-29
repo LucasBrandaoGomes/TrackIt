@@ -5,11 +5,43 @@ import dayjs from "dayjs"
 import 'dayjs/locale/pt-br'
 import { useContext } from "react";
 import InfoLoginContext from "../contexts/InfoLogin";
+import { useState } from "react"
+import axios from "axios"
+import {useEffect} from 'react';
 
 export default function TelaHoje(){
 
     const dataHoje = dayjs().locale('pt-br')
-    const { infoLogin } = useContext(InfoLoginContext);
+    const { infoLogin } = useContext(InfoLoginContext); 
+    const [meusHabitosHoje, setMeusHabitosHoje] = useState([])
+
+    const config = 
+    {
+        headers:{Authorization: `Bearer ${infoLogin.token}`}
+    }
+    
+    useEffect(() => {
+
+    const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config)
+    
+    promise
+    .then(res=> {
+        setMeusHabitosHoje([...res.data]);
+        console.log("meus habitos hoje", meusHabitosHoje)
+        })
+    .catch(err =>  alert("Erro ao carregar habitos de hoje"));
+
+    }, []);
+
+    function HabitoHoje({nomeHabito, sequenciaAtual, maiorSequencia}){
+       return(
+        <>
+            <p>{nomeHabito}</p>
+            <p>Sequencia atual: {sequenciaAtual}</p>
+            <p>Seu recorde: {maiorSequencia}</p>
+        </>
+       )
+    }
 
     return (
         <>  
@@ -18,7 +50,9 @@ export default function TelaHoje(){
                 <div>
                     <h1>{dataHoje.format("dddd")}, {dataHoje.format("DD/MM")}</h1>
                 </div>
-                <p>Nenhum hábito concluído ainda</p>
+                    {meusHabitosHoje.length === 0 ?
+                    <></> :
+                    meusHabitosHoje.map(item => <HabitoHoje nomeHabito={item.name} sequenciaAtual={item.currentSequence} maiorSequencia={item.highestSequence}/>)}
             </ConteudoHoje>
             <Menu />
         </>

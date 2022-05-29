@@ -4,19 +4,17 @@ import axios from "axios"
 import InfoLoginContext from "../contexts/InfoLogin";
 import { useContext } from "react";
 
-
 function Dia({dia, disableButton, diasSelecionados, toggle, id}) {
     
     const selecionado = diasSelecionados.some(item => item === id);
-    console.log("selecionado", selecionado)
     return (
-       <button disabled={disableButton} onClick={() => toggle(id)}  selecionado={selecionado}>
+       <div disabled={disableButton} onClick={() => toggle(id)}  selecionado={selecionado}>
            {dia}
-       </button>
+       </div>
     );
 }
 
-export default function CriarHabitoPage(){
+export default function CriarHabitoPage({setAddHabito}){
 
     const [novoHabito, setNovoHabito] = useState("")
     const [diasSelecionados, setDiasSelecionados] = useState([])
@@ -29,15 +27,16 @@ export default function CriarHabitoPage(){
         {id: 4, dia: "Q"}, {id: 5, dia: "Q"}, {id: 6, dia: "S"}, {id: 7, dia: "S"}];
 
     function toggle(id) {
-
-        const jaSelecionado = diasSelecionados.some(dia => dia.id === id);
+        console.log("toggle")
+        console.log(diasSelecionados)
+        const jaSelecionado = diasSelecionados.some(dia => dia === id);
     
         if (!jaSelecionado) {
         setDiasSelecionados(diasSelecionados => [...diasSelecionados,id]);
         } else {
-        const novosDias = diasSelecionados.filter(dia => dia.id !== id);
-        setDiasSelecionados(novosDias);
-        }
+        const novosDias = diasSelecionados.filter(itemId => itemId !== id);
+        setDiasSelecionados(novosDias);}
+        
     }
 
     function criarNovoHabito(e) {
@@ -66,13 +65,14 @@ export default function CriarHabitoPage(){
         const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", envioHabito, config);
         promise.then(res => {
             setMeusHabitos([...meusHabitos, res.data]);
-            limparFormNovoHabito();
+            limparFormNovoHabito()
             setDisableButton(false);
         });
         promise.catch(res => {
             alert("Erro ao salvar o hábito!");
             setDisableButton(false);
         });
+        setAddHabito(false)
     }
 
     return(
@@ -83,7 +83,7 @@ export default function CriarHabitoPage(){
                     {diasDaSemana.map(dia => <Dia disableButton={disableButton} key={dia.id} id={dia.id} dia={dia.dia} toggle={toggle} diasSelecionados={diasSelecionados}/>)}
                 </Dias>
                 <CancelarSalvar>
-                    <p>Cancelar</p>
+                    <p onClick={() => {setAddHabito(false)}}>Cancelar</p>
                     <button type="submit">Salvar</button>
                 </CancelarSalvar>
             </FormNovoHabito >
@@ -125,7 +125,10 @@ const FormNovoHabito = styled.form`
 const Dias = styled.div`
     display: flex;
     
-    button{
+    div{
+        display:flex;
+        justify-content:center;
+        align-items:center;
         width: 30px;
         height: 30px;
         margin-right:4px;
