@@ -14,6 +14,7 @@ export default function TelaHoje(){
     const dataHoje = dayjs().locale('pt-br')
     const { infoLogin } = useContext(InfoLoginContext); 
     const [meusHabitosHoje, setMeusHabitosHoje] = useState([])
+    const [reload, setReload] = useState(false);
 
     const config = 
     {
@@ -27,22 +28,50 @@ export default function TelaHoje(){
     promise
     .then(res=> {
         setMeusHabitosHoje([...res.data]);
-        console.log("meus habitos hoje", meusHabitosHoje)
         })
     .catch(err =>  alert("Erro ao carregar habitos de hoje"));
 
-    }, []);
+    }, [reload]);
 
-    function HabitoHoje({nomeHabito, sequenciaAtual, maiorSequencia}){
+    console.log(meusHabitosHoje)
+
+    function marcarDesmarcar(id, done){
+        if(!done) {
+            const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, {}, config);
+            request.then(answer => {
+                setReload(!reload);
+            })
+            .catch(() => alert("Erro ao concluir o hábito!"));
+        } else {
+            const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, {}, config);
+            request.then(answer => {
+                setReload(!reload);
+            })
+            .catch(() => alert("Erro ao desmarcar o hábito!"));
+        }
+    }
+    
+    function HabitoHoje({nomeHabito, sequenciaAtual, maiorSequencia, id, done, marcarDesmarcar}){
        return(
-        <>
-            <p>{nomeHabito}</p>
-            <p>Sequencia atual: {sequenciaAtual}</p>
-            <p>Seu recorde: {maiorSequencia}</p>
-        </>
+        <CheckHabito>
+            <div>
+                <h1>{nomeHabito}</h1>
+                <p>Sequencia atual: {sequenciaAtual}</p>
+                <p>Seu recorde: {maiorSequencia}</p>
+            </div>
+            <div done={done} onClick = {() => marcarDesmarcar(id,done)}><ion-icon name="checkbox"></ion-icon></div>
+            
+        </CheckHabito>
        )
     }
+    function ListaHabHoje({habitosDeHoje}){
+        const MontarListaHabitosDeHoje = () =>{
+            return habitosDeHoje.map(habito => <HabitoHoje nomeHabito={habito.name} sequenciaAtual={habito.currentSequence} maiorSequencia={habito.highestSequence} id={habito.id} done={habito.done} marcarDesmarcar={marcarDesmarcar}/>);
+        }
+        const listaHabitosDeHoje = MontarListaHabitosDeHoje();
 
+        return listaHabitosDeHoje;
+    }
     return (
         <>  
             <Topo urlImage={infoLogin.image} />
@@ -51,8 +80,9 @@ export default function TelaHoje(){
                     <h1>{dataHoje.format("dddd")}, {dataHoje.format("DD/MM")}</h1>
                 </div>
                     {meusHabitosHoje.length === 0 ?
-                    <></> :
-                    meusHabitosHoje.map(item => <HabitoHoje nomeHabito={item.name} sequenciaAtual={item.currentSequence} maiorSequencia={item.highestSequence}/>)}
+                    <><p>Voce não tem hábitos hoje!!</p></> 
+                    :
+                    <ListaHabHoje habitosDeHoje={meusHabitosHoje} />}
             </ConteudoHoje>
             <Menu />
         </>
@@ -61,10 +91,12 @@ export default function TelaHoje(){
 const ConteudoHoje = styled.div`
     background-color: #F2F2F2;
     width:100%;
+    height: 100vh;
+    padding-left:18px;
+    padding-right:18px;
     padding-top: 98px;
     p{
-        padding-left:17px;
-        padding-right:18px;
+        
         font-family: 'Lexend Deca';
         font-style: normal;
         font-weight: 400;
@@ -78,8 +110,7 @@ const ConteudoHoje = styled.div`
         width: 100%;
         justify-content:space-between;
         align-items:center;
-        padding-left:17px;
-        padding-right:18px;
+       
     }
     h1{
         font-family: 'Lexend Deca';
@@ -87,7 +118,52 @@ const ConteudoHoje = styled.div`
         font-weight: 400;
         font-size: 22.976px;
         line-height: 29px;
+        margin-bottom: 17px;
 
         color: #126BA5;
+    }
+    `
+const CheckHabito = styled.div`
+    display:flex;
+    background: #FFFFFF;
+    border-radius: 5px;
+    margin-bottom:10px;
+    
+    div:first-child {
+        display:flex;
+        flex-direction:column;
+    
+    h1{
+        font-family: 'Lexend Deca';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 19.976px;
+        line-height: 25px;
+
+        color: #666666;
+    }
+    p{
+        font-family: 'Lexend Deca';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12.976px;
+        line-height: 16px;
+
+        color: #666666;
+    }    
+
+    }
+    div:nth-child(2){
+        display:flex;
+        justify-content:flex-end;
+    
+    ion-icon{
+        width: 69px;
+        height:69px;
+        color: ${props => props.done ? "green" : "#EBEBEB"};
+        &:hover{
+            cursor: pointer;
+        }
+    }
     }
     `

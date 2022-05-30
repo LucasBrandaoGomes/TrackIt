@@ -21,10 +21,11 @@ export default function Menu(){
                             value={percentage} 
                             minValue={0} maxValue={100} 
                             text={"Hoje"}
-                            strokeWidth={5}
+                            strokeWidth={6}
                             background
                             backgroundPadding={6}
                             styles={buildStyles({
+                            text:{transform:  'translate (-24px, 6px)' },
                             textSize:"17.9px",
                             strokeLinecap: "butt",
                             backgroundColor: "#3e98c7",
@@ -61,10 +62,17 @@ const Footer = styled.div`
         line-height: 22px;
         text-align: center;
         color: #52B6FF;
+        &:hover{
+            cursor: pointer;
+        }
     }
     div{
+        display:flex;
         width: 91px;
         height: 91px;
+        justify-content: center;
+        align-items:center;
+        
     }
 
 `

@@ -30,6 +30,32 @@ export default function Habitos(){
         });
     }, []);
 
+    function DeletarHabito({id}){
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${infoLogin.token}`
+            }
+        }
+        const promise = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`, config);
+        promise.then(res => {
+            setMeusHabitos(meusHabitos.filter(item => item.id !== id));
+        }).catch(() => alert("Erro ao deletar o hábito!"));
+    }
+
+    function DiasDoHabito ({item}){
+        return item.days.map(diaSemana => <div>{diaSemana}</div>)
+    }
+    function Habito({id, item, nomeDoHabito}){
+        return(
+            <HabitoX>
+                <h1>{nomeDoHabito}</h1>
+                <DiasDoHabito item={item}/>
+                <ion-icon name="trash-outline" onClick={() => DeletarHabito({id})}></ion-icon>
+            </HabitoX>
+        )
+    }
+    
     return (
         <>  
             <Topo urlImage={infoLogin.image} />
@@ -55,20 +81,15 @@ export default function Habitos(){
                 {addHabito ?
                     <>
                         <CriarHabitoPage setAddHabito={setAddHabito}/>
-                        <p>{meusHabitos.map(nome => <p>{nome.name}</p>)}</p>
+                        {meusHabitos.map(item => 
+                        <Habito id={item.id} item={item} nomeDoHabito={item.name}/>)}
                     </>
-                :   
-                    
+                :     
                     <>
                         {meusHabitos.map(item => 
-                        <div>
-                            <p>{item.name}</p>
-                            <DiasDoHabito item={item}/>
-                        </div>)}
+                        <Habito id={item.id} item={item} nomeDoHabito={item.name}/>)}
                     </>
-                    
-                    }
-
+                }
             </>
             }
             </Container>
@@ -76,15 +97,13 @@ export default function Habitos(){
         </>
     )
 }
-function DiasDoHabito ({item}){
-    return item.days.map(diaSemana => <div>{diaSemana}</div>)
-}
+
 const Container = styled.div`
     background-color: #F2F2F2;
     width:100%;
-    height: 100vh;
     padding-top: 98px;
     padding-left: 18px;
+    margin-bottom: 150px;
 `
 const MeusHab = styled.div`
     display:flex;
@@ -128,5 +147,27 @@ const SemHabitos = styled.div`
         line-height: 22px;
 
         color: #666666;
+    }
+    `
+const HabitoX = styled.div`
+    width: 340px;
+    height: 91px;
+    background: #FFFFFF;
+    border-radius: 5px;
+    margin-bottom:10px;
+
+    h1{
+        font-family: 'Lexend Deca';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 19.976px;
+        line-height: 25px;
+
+        color: #666666;
+    }
+    ion-icon{
+        &:hover{
+            cursor: pointer;
+        }
     }
     `

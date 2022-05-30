@@ -6,6 +6,7 @@ import LoginPage from "./LoginPage";
 import TelaHoje from "./TelaHoje";
 import Habitos from "./Habitos";
 import InfoLoginContext from "../contexts/InfoLogin";
+import TelaHistorico from "./TelaHistorico";
 
 export default function App(){
     
@@ -21,6 +22,7 @@ export default function App(){
                                 <Route path="/cadastro" element={<Cadastro />}/>
                                 <Route path="/hoje" element={<TelaHoje />}/>
                                 <Route path="/habitos" element={<Habitos />}/>
+                                <Route path="/historico" element={<TelaHistorico />}/>
                             </Routes>
                         </Container>
                     </div>

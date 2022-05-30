@@ -8,7 +8,7 @@ function Dia({dia, disableButton, diasSelecionados, toggle, id}) {
     
     const selecionado = diasSelecionados.some(item => item === id);
     return (
-       <div disabled={disableButton} onClick={() => toggle(id)}  selecionado={selecionado}>
+       <div disabled={disableButton} onClick={() => toggle({id})}  selecionado={selecionado}>
            {dia}
        </div>
     );
@@ -26,16 +26,19 @@ export default function CriarHabitoPage({setAddHabito}){
     const diasDaSemana = [{id: 1, dia: "D"}, {id: 2, dia: "S"}, {id: 3, dia: "T"}, 
         {id: 4, dia: "Q"}, {id: 5, dia: "Q"}, {id: 6, dia: "S"}, {id: 7, dia: "S"}];
 
-    function toggle(id) {
-        console.log("toggle")
-        console.log(diasSelecionados)
+    function toggle({id}) {
+        console.log(`quando clicou o id era: ${id}`)
         const jaSelecionado = diasSelecionados.some(dia => dia === id);
+        console.log(jaSelecionado)
     
-        if (!jaSelecionado) {
-        setDiasSelecionados(diasSelecionados => [...diasSelecionados,id]);
+        if (jaSelecionado === false) {
+        setDiasSelecionados([...diasSelecionados,id]);
+        console.log("nao estava selecionado", diasSelecionados)
         } else {
         const novosDias = diasSelecionados.filter(itemId => itemId !== id);
-        setDiasSelecionados(novosDias);}
+        setDiasSelecionados([...novosDias]);
+        console.log("estava selecionado", diasSelecionados)
+    }
         
     }
 

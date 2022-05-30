@@ -13,6 +13,7 @@ export default function Topo({urlImage}){
 
 const Top = styled.div`
     position:fixed;
+    z-index:1;
     top:0;
     left:0;
     display:flex;
