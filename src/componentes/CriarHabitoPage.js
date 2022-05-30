@@ -4,7 +4,7 @@ import axios from "axios"
 import InfoLoginContext from "../contexts/InfoLogin";
 import { useContext } from "react";
 
-function Dia({dia, disableButton, diasSelecionados, toggle, id, selecionado}) {
+function Dia({dia, disableButton, diasSelecionados, toggle, id}) {
     
     const selecionado = diasSelecionados.some(item => item === id);
     
