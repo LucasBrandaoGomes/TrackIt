@@ -15,7 +15,6 @@ export default function TelaHoje(){
     const { infoLogin } = useContext(InfoLoginContext); 
     const [meusHabitosHoje, setMeusHabitosHoje] = useState([])
     const [reload, setReload] = useState(false);
-    const [contadorConcluidas, setContadorConcluidas] = useState(0)
     const [porcentagem, setPorcentagem] = useState(0)
 
 
@@ -31,6 +30,7 @@ export default function TelaHoje(){
     promise
     .then(res=> {
         setMeusHabitosHoje([...res.data]);
+        porcentagemConcluida(res.data)
         })
     .catch(err =>  alert("Erro ao carregar habitos de hoje"));
 
@@ -39,30 +39,30 @@ export default function TelaHoje(){
     function marcarDesmarcar(id, done){
         if(!done) {
             const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, {}, config);
-            request.then(answer => {
+            request.then(res => {
                 setReload(!reload);
-                setContadorConcluidas(contadorConcluidas+1);
-                console.log(contadorConcluidas)
 
             })
             .catch(() => alert("Erro ao concluir o hábito!"));
         } else {
             const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, {}, config);
-            request.then(answer => {
+            request.then(res => {
                 setReload(!reload);
-                setContadorConcluidas(contadorConcluidas-1);
-                console.log(contadorConcluidas)
-
-
             })
             .catch(() => alert("Erro ao desmarcar o hábito!"));
         }
         porcentagemConcluida(meusHabitosHoje)
     }
 
-    function porcentagemConcluida(meusHabitosHoje) {
+    function porcentagemConcluida(habitosDoDia) {
+        let count = 0;
+        habitosDoDia.map(habito => {
+            if(habito.done){
+                count++;
+            }
+            return true;});
       
-        const valor = meusHabitosHoje.length === 0 ? 0 : (contadorConcluidas/meusHabitosHoje.length)*100;
+        const valor = habitosDoDia.length === 0 ? 0 : (count/habitosDoDia.length)*100;
         setPorcentagem(valor);
     }
     

@@ -11,9 +11,11 @@ function Dia({dia, disableButton, diasSelecionados, toggle, id}) {
     const selecionado = diasSelecionados.some(item => item === id);
     
     return (
-       <div disabled={disableButton} onClick={() => toggle({id})}  selecionado={selecionado} >
-           {dia}
-       </div>
+        <Dias selecionado={selecionado}>
+            <div disabled={disableButton} onClick={() => toggle({id})} >
+                {dia}
+            </div>
+        </Dias>
     );
 }
 
@@ -26,8 +28,9 @@ export default function CriarHabitoPage({setAddHabito}){
     const { infoLogin } = useContext(InfoLoginContext);
     const [meusHabitos, setMeusHabitos] = useState([]);
 
-    const diasDaSemana = [{id: 1, dia: "D"}, {id: 2, dia: "S"}, {id: 3, dia: "T"}, 
-        {id: 4, dia: "Q"}, {id: 5, dia: "Q"}, {id: 6, dia: "S"}, {id: 7, dia: "S"}];
+
+    const diasDaSemana = [{id: 0, dia: "D"}, {id: 1, dia: "S"}, {id: 2, dia: "T"}, 
+        {id: 3, dia: "Q"}, {id: 4, dia: "Q"}, {id: 5, dia: "S"}, {id: 6, dia: "S"}];
 
     function toggle({id}) {
         const jaSelecionado = diasSelecionados.some(dia => dia === id);
@@ -63,7 +66,8 @@ export default function CriarHabitoPage({setAddHabito}){
             setNovoHabito("");
             setDiasSelecionados([]);
         }
-    
+        
+
         const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", envioHabito, config);
         promise.then(res => {
             setMeusHabitos([...meusHabitos, res.data]);
@@ -74,16 +78,17 @@ export default function CriarHabitoPage({setAddHabito}){
             alert("Erro ao salvar o hábito!");
             setDisableButton(false);
         });
+   
+
         setAddHabito(false)
+
     }
 
     return(
         <ContainerNovoHabito>
             <FormNovoHabito onSubmit={criarNovoHabito}>
                 <input type="text" placeholder="nome do hábito" value={novoHabito} onChange={e => setNovoHabito(e.target.value)} required/>
-                <Dias>
-                    {diasDaSemana.map(dia => <Dia disableButton={disableButton} key={dia.id} id={dia.id} dia={dia.dia} toggle={toggle} diasSelecionados={diasSelecionados}/>)}
-                </Dias>
+                <ListaDias>{diasDaSemana.map(dia => <Dia disableButton={disableButton} key={dia.id} id={dia.id} dia={dia.dia} toggle={toggle} diasSelecionados={diasSelecionados}/>)}</ListaDias>
                 <CancelarSalvar>
                     <p onClick={() => {setAddHabito(false)}}>Cancelar</p>
                     <button ype="submit" disabled={disableButton}>{disableButton ? <ThreeDots color="white"/> : "Salvar"}</button>
@@ -124,6 +129,12 @@ const FormNovoHabito = styled.form`
             color: #DBDBDB;}
     }
     `
+const ListaDias = styled.div`
+        display:flex;
+        justify-content:flex-start;
+        align-items:center;
+`
+
 const Dias = styled.div`
     display: flex;
     
