@@ -15,6 +15,9 @@ export default function TelaHoje(){
     const { infoLogin } = useContext(InfoLoginContext); 
     const [meusHabitosHoje, setMeusHabitosHoje] = useState([])
     const [reload, setReload] = useState(false);
+    const [contadorConcluidas, setContadorConcluidas] = useState(0)
+    const [porcentagem, setPorcentagem] = useState(0)
+
 
     const config = 
     {
@@ -33,37 +36,50 @@ export default function TelaHoje(){
 
     }, [reload]);
 
-    console.log(meusHabitosHoje)
-
     function marcarDesmarcar(id, done){
         if(!done) {
             const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`, {}, config);
             request.then(answer => {
                 setReload(!reload);
+                setContadorConcluidas(contadorConcluidas+1);
+                console.log(contadorConcluidas)
+
             })
             .catch(() => alert("Erro ao concluir o hábito!"));
         } else {
             const request = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`, {}, config);
             request.then(answer => {
                 setReload(!reload);
+                setContadorConcluidas(contadorConcluidas-1);
+                console.log(contadorConcluidas)
+
+
             })
             .catch(() => alert("Erro ao desmarcar o hábito!"));
         }
+        porcentagemConcluida(meusHabitosHoje)
+    }
+
+    function porcentagemConcluida(meusHabitosHoje) {
+      
+        const valor = meusHabitosHoje.length === 0 ? 0 : (contadorConcluidas/meusHabitosHoje.length)*100;
+        setPorcentagem(valor);
     }
     
     function HabitoHoje({nomeHabito, sequenciaAtual, maiorSequencia, id, done, marcarDesmarcar}){
        return(
-        <CheckHabito>
+        <CheckHabito done={done}>
             <div>
                 <h1>{nomeHabito}</h1>
                 <p>Sequencia atual: {sequenciaAtual}</p>
                 <p>Seu recorde: {maiorSequencia}</p>
             </div>
-            <div done={done} onClick = {() => marcarDesmarcar(id,done)}><ion-icon name="checkbox"></ion-icon></div>
+            <div onClick = {() => marcarDesmarcar(id,done)}><ion-icon name="checkbox"></ion-icon></div>
             
         </CheckHabito>
        )
     }
+
     function ListaHabHoje({habitosDeHoje}){
         const MontarListaHabitosDeHoje = () =>{
             return habitosDeHoje.map(habito => <HabitoHoje nomeHabito={habito.name} sequenciaAtual={habito.currentSequence} maiorSequencia={habito.highestSequence} id={habito.id} done={habito.done} marcarDesmarcar={marcarDesmarcar}/>);
@@ -78,13 +94,14 @@ export default function TelaHoje(){
             <ConteudoHoje>
                 <div>
                     <h1>{dataHoje.format("dddd")}, {dataHoje.format("DD/MM")}</h1>
+                    <p>{porcentagem.toFixed()}% dos hábitos concluídos</p>
                 </div>
                     {meusHabitosHoje.length === 0 ?
                     <><p>Voce não tem hábitos hoje!!</p></> 
                     :
                     <ListaHabHoje habitosDeHoje={meusHabitosHoje} />}
             </ConteudoHoje>
-            <Menu />
+            <Menu porcentagem={porcentagem}/>
         </>
     )
 }

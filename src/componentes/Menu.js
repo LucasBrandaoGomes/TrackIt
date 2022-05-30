@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import {useNavigate} from 'react-router-dom';
 import { CircularProgressbar,  buildStyles } from 'react-circular-progressbar';
 
-export default function Menu(){
+export default function Menu({porcentagem}){
     const navigate = useNavigate();
     
     function irParaHabitos(){
@@ -12,7 +12,7 @@ export default function Menu(){
     function irParaHistorico(){
         navigate("/historico")
     }
-    const percentage = 66;
+    const percentage = porcentagem;
     return (
         <Footer>
             <p onClick={irParaHabitos}>Hábitos</p>
