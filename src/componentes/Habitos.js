@@ -26,7 +26,6 @@ export default function Habitos(){
     
     promise.then(res=> {
         setMeusHabitos([...res.data]);
-        console.log("meus habitos", meusHabitos)
         });
     }, []);
 

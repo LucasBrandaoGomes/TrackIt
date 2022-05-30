@@ -3,13 +3,15 @@ import {useState} from "react"
 import axios from "axios"
 import InfoLoginContext from "../contexts/InfoLogin";
 import { useContext } from "react";
+import { ThreeDots } from "react-loader-spinner";
+
 
 function Dia({dia, disableButton, diasSelecionados, toggle, id}) {
     
     const selecionado = diasSelecionados.some(item => item === id);
     
     return (
-       <div disabled={disableButton} onClick={() => toggle({id})}  selecionado={selecionado} toggle={toggle}>
+       <div disabled={disableButton} onClick={() => toggle({id})}  selecionado={selecionado} >
            {dia}
        </div>
     );
@@ -28,17 +30,13 @@ export default function CriarHabitoPage({setAddHabito}){
         {id: 4, dia: "Q"}, {id: 5, dia: "Q"}, {id: 6, dia: "S"}, {id: 7, dia: "S"}];
 
     function toggle({id}) {
-        console.log(`quando clicou o id era: ${id}`)
         const jaSelecionado = diasSelecionados.some(dia => dia === id);
-        console.log(jaSelecionado)
     
         if (jaSelecionado === false) {
         setDiasSelecionados([...diasSelecionados,id]);
-        console.log("nao estava selecionado", diasSelecionados)
         } else {
         const novosDias = diasSelecionados.filter(itemId => itemId !== id);
         setDiasSelecionados([...novosDias]);
-        console.log("estava selecionado", diasSelecionados)
     }
         
     }
@@ -88,7 +86,7 @@ export default function CriarHabitoPage({setAddHabito}){
                 </Dias>
                 <CancelarSalvar>
                     <p onClick={() => {setAddHabito(false)}}>Cancelar</p>
-                    <button type="submit">Salvar</button>
+                    <button ype="submit" disabled={disableButton}>{disableButton ? <ThreeDots color="white"/> : "Salvar"}</button>
                 </CancelarSalvar>
             </FormNovoHabito >
         </ContainerNovoHabito>
@@ -165,6 +163,9 @@ const CancelarSalvar = styled.div`
         color: #52B6FF;
     }
     button{
+    display:flex;
+    align-items:center;
+    justify-content:center;
     width: 84px;
     height: 35px;
     background: #52B6FF;
@@ -178,6 +179,8 @@ const CancelarSalvar = styled.div`
     line-height: 26px;
     margin-left: 18px;
     color: #FFFFFF;
+    opacity: ${props => props.disabled ? 0.4 : 1 };
+
     &:hover{
         cursor:pointer;
     }}`

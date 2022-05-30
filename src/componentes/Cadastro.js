@@ -37,8 +37,8 @@ export default function Cadastro(){
         .then(res =>{ 
             navigate("/");
         })
-        .catch(err=> alert("Erro, preencha corretamente os dados"))
-        setDisableButton(false);
+        .catch(err=> {alert("Erro, preencha corretamente os dados");
+        setDisableButton(false);});
 
     }
 
@@ -97,7 +97,9 @@ const Cadastrar = styled.button`
     border: none;
     border-radius: 4.63636px;
     text-decoration: none; 
-
+    display:flex;
+    align-items:center;
+    justify-content:center;
     font-family: 'Lexend Deca';
     font-style: normal;
     font-weight: 400;
@@ -111,7 +113,7 @@ const Cadastrar = styled.button`
     }
 `
 const Loguese = styled.div`
-    margin-top:140px;
+    margin-top:155px;
     p{
         font-family: 'Lexend Deca';
         font-style: normal;
