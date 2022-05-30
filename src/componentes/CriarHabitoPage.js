@@ -4,11 +4,12 @@ import axios from "axios"
 import InfoLoginContext from "../contexts/InfoLogin";
 import { useContext } from "react";
 
-function Dia({dia, disableButton, diasSelecionados, toggle, id}) {
+function Dia({dia, disableButton, diasSelecionados, toggle, id, selecionado}) {
     
     const selecionado = diasSelecionados.some(item => item === id);
+    
     return (
-       <div disabled={disableButton} onClick={() => toggle({id})}  selecionado={selecionado}>
+       <div disabled={disableButton} onClick={() => toggle({id})}  selecionado={selecionado} toggle={toggle}>
            {dia}
        </div>
     );
